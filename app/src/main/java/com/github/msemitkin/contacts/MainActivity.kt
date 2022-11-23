@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     ContactsAutoSuggestions(
-                        getContactsByQuery = ContactsService(appContext = applicationContext)
+                        getContactsByQuery = ContactsService(applicationContext.contentResolver)
                     )
                 }
             }

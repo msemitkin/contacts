@@ -75,7 +75,7 @@ fun ContactsAutoSuggestions(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 30.dp)
-                    .fillMaxHeight(0.5f)
+                    .fillMaxHeight(0.4f)
             ) {
                 val contacts = getContactsByQuery.getContactsByQuery(inputText)
                 contacts.forEach { contact ->
@@ -84,7 +84,9 @@ fun ContactsAutoSuggestions(
                     ) {
                         Column {
                             Text(text = contact.fullName)
-                            Text(text = contact.phoneNumber)
+                            contact.phoneNumbers.forEach { phoneNumber ->
+                                Text(text = phoneNumber)
+                            }
                         }
                     }
                 }

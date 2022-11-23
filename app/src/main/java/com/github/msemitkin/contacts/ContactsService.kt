@@ -1,20 +1,24 @@
 package com.github.msemitkin.contacts
 
-import android.content.Context
+import android.content.ContentResolver
 import android.provider.ContactsContract
+import android.provider.ContactsContract.CommonDataKinds.Phone
 
 interface GetContactsByQuery {
     fun getContactsByQuery(query: String): List<Contact>
 }
 
-private const val PHONE_STUB = "+380986666666"
-
-class ContactsService(private val appContext: Context) : GetContactsByQuery {
+class ContactsService(private val contentResolver: ContentResolver) : GetContactsByQuery {
 
     override fun getContactsByQuery(query: String): List<Contact> {
         val contacts = mutableListOf<Contact>()
-        val contentResolver = appContext.contentResolver
-        contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null)!!
+        contentResolver.query(
+            ContactsContract.Contacts.CONTENT_URI,
+            null,
+            null,
+            null,
+            null
+        )!!
             .use { cursor ->
                 while (cursor.moveToNext()) {
                     val idColumnIndex = cursor.getColumnIndex(ContactsContract.Contacts._ID)
@@ -25,15 +29,31 @@ class ContactsService(private val appContext: Context) : GetContactsByQuery {
                     contacts.add(
                         Contact(
                             contactDisplayName,
-                            getPhoneNumber(contactId)
+                            getPhoneNumbers(contactId)
                         )
                     )
                 }
             }
-        return contacts.filter { it.fullName.contains(query, true) }
+        return contacts.filter {
+            it.fullName.contains(query, true)
+                    || it.phoneNumbers.any { number -> number.contains(query, true) }
+        }
     }
 
-    private fun getPhoneNumber(contactId: String?): String {
-        return PHONE_STUB
+    private fun getPhoneNumbers(contactId: String): List<String> {
+        val numbers = mutableListOf<String>()
+        contentResolver.query(
+            Phone.CONTENT_URI,
+            null,
+            Phone.CONTACT_ID + " = ?",
+            arrayOf(contactId),
+            null
+        )!!.use { cursor ->
+            while (cursor.moveToNext()) {
+                val phoneNumberColumnIndex = cursor.getColumnIndex(Phone.NUMBER)
+                numbers.add(cursor.getString(phoneNumberColumnIndex))
+            }
+        }
+        return numbers
     }
 }
