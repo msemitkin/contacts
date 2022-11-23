@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
@@ -25,6 +26,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 
@@ -69,9 +71,11 @@ fun ContactsAutoSuggestions(
                 properties = PopupProperties(focusable = false),
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
+                offset = DpOffset(0.dp, 20.dp),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 30.dp)
+                    .fillMaxHeight(0.5f)
             ) {
                 val contacts = getContactsByQuery.getContactsByQuery(inputText)
                 contacts.forEach { contact ->
