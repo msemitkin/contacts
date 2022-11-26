@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Contacts</string>
+    <string name="author_name">Mykhailo Semitkin</string>
 </resources>
