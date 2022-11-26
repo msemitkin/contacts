@@ -54,6 +54,6 @@ class ContactsService(private val contentResolver: ContentResolver) : GetContact
                 numbers.add(cursor.getString(phoneNumberColumnIndex))
             }
         }
-        return numbers
+        return numbers.map { it.replace(" ", "") }
     }
 }
